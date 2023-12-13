@@ -4,16 +4,17 @@
 #include<time.h>
 #include<algorithm>
 #include<windows.h>
+// Utilizo esta definicion para acortar un poco a la hora de programar, ademas es mas sencillo de entender que esto cambia el color de las letras o el fondo.
 #define color SetConsoleTextAttribute
 
 using namespace std;
-
+// Es lo mismo que un swap
 void intercambiar(int *a, int *b){
 	int temp = *a;
 	*a = *b;
 	*b = temp;
 }
-
+// Todos estas funciones son algoritmos de ordenamientos, hasta el heapSort despues de este ya son otras funciones
 void insertionSort(int arr[], int n){
     for(int i = 1; i < n; ++i){
         int clave = arr[i];
@@ -170,14 +171,16 @@ void heapSort(int arr[], int n){
         heap(arr, i, 0);
     }
 }
-
+// Imprime un arreglo de enteros
 void imprimirArreglo(int arr[], int n){
 	for(int i = 0; i<n; i++){
 		cout << arr[i] << " ";
 	}
 	cout << endl;
 }
-
+// Toma el tiempo de cada algoritmo a la hora de ordenar un arreglo, y lo muestra en pantalla, ademas realiza una comparacion de ellos.
+// El color es lo que se define mas arriba, y se utiliza para cambiar el color 4 = rojo y 7 = blanco.
+// copy es una funcion de algorithm que utilice para copiar los arreglos
 void verificarTiempo(int arrUtil[], int arrAuxiliar[], int maximo){
 	
 	copy(arrUtil, arrUtil+maximo, arrAuxiliar);
@@ -266,7 +269,9 @@ void verificarTiempo(int arrUtil[], int arrAuxiliar[], int maximo){
 	cout << "\nEl ganador es: " << algoritmos[ganador] << " un tiempo de " << duracionMenor.count() << " segundos\n\n";
 	
 }
-
+// Crea los cuatro arreglos necesarios para la problematica
+// random_shuffle desordena un arreglo de manera aleatoria, es bastante practico para crear un arreglo aleatorio sin repeticion
+// Tambien cree arreglos dinamicos porque a la hora de utilizar arreglos normales daba ciertos fallos en la memoria, desconosco el porque pero esta opcion me soluciono el problema
 void crearArreglos(int maximo, string modo){
 
 	int* arrOrdenado = new int[maximo];
@@ -299,11 +304,11 @@ void crearArreglos(int maximo, string modo){
     delete[] arrDuplicados;
 
 }
-
+// Obtiene un numero random dentro de un rango
 int obtenerRandom(int inicio, int final){
 	return rand()%(final-inicio+1)+inicio;
 }
-
+// Le da opciones al usuario para que decida que carrera quiere ejecutar
 void menu(){
 	int opcion = 0;
 	cout << "Bienvenido a las carreras de algoritmos de ordenamiento\n";
