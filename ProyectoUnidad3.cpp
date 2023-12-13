@@ -6,10 +6,10 @@
 
 using namespace std;
 
-void intercambiar(int &a, int &b){
-	int temp = a;
-	a = b;
-	b = temp;
+void intercambiar(int *a, int *b){
+	int temp = *a;
+	*a = *b;
+	*b = temp;
 }
 
 void insertionSort(int arr[], int n){
@@ -29,7 +29,7 @@ void bubbleSort(int arr[], int n){
     for(int i = 0; i<n-1; ++i){
         for(int j = 0; j<n-i-1; ++j){
             if(arr[j] > arr[j+1]){
-            	intercambiar(arr[j], arr[j+1]);
+            	intercambiar(&arr[j], &arr[j+1]);
 			}
         }
     }
@@ -43,7 +43,7 @@ void selectionSort(int arr[], int n){
             	indiceMin = j;
 			}
         }
-        intercambiar(arr[indiceMin], arr[i]);
+        intercambiar(&arr[indiceMin], &arr[i]);
     }
 }
 
@@ -113,17 +113,22 @@ void mergeSort(int arr[], int l, int r){
 }
 
 int particion(int arr[], int low, int high){
-    int pivote = arr[high];
-    int i = (low - 1);
+    int medio = low + (high - low) / 2;
+    int pivote = arr[medio];
 
-    for(int j = low; j <= high - 1; j++){
-        if(arr[j] < pivote){
+    intercambiar(&arr[medio], &arr[high]);
+
+    int i = low;
+
+    for (int j = low; j < high; j++) {
+        if (arr[j] < pivote) {
+            intercambiar(&arr[i], &arr[j]);
             i++;
-            intercambiar(arr[i], arr[j]);
         }
     }
-    intercambiar(arr[i + 1], arr[high]);
-    return (i + 1);
+
+    intercambiar(&arr[i], &arr[high]);
+    return i;
 }
 
 void quickSort(int arr[], int low, int high){
@@ -147,7 +152,7 @@ void heap(int arr[], int n, int i){
     	maximo = derecha;
 	}
     if(maximo != i){
-        intercambiar(arr[i], arr[maximo]);
+        intercambiar(&arr[i], &arr[maximo]);
 
         heap(arr, n, maximo);
     }
@@ -158,7 +163,7 @@ void heapSort(int arr[], int n){
     	heap(arr, n, i);
 	}
     for(int i = n - 1; i > 0; i--){
-        intercambiar(arr[0], arr[i]);
+        intercambiar(&arr[0], &arr[i]);
 
         heap(arr, i, 0);
     }
@@ -171,7 +176,59 @@ void imprimirArreglo(int arr[], int n){
 	cout << endl;
 }
 
+void verificarTiempo(int arrUtil[], int arrAuxiliar[], int maximo){
 
+	copy(arrUtil, arrUtil+maximo, arrAuxiliar);
+	auto tiempoInicial = chrono::high_resolution_clock::now();
+	insertionSort(arrUtil, maximo);
+	auto tiempoFinal = chrono::high_resolution_clock::now();
+	chrono::duration<double> duracionInsertion = tiempoFinal - tiempoInicial;
+	copy(arrAuxiliar, arrAuxiliar+maximo, arrUtil);
+	cout << "sale1\n";
+	tiempoInicial = chrono::high_resolution_clock::now();
+	bubbleSort(arrUtil, maximo);
+	tiempoFinal = chrono::high_resolution_clock::now();
+	chrono::duration<double> duracionBubble = tiempoFinal - tiempoInicial;
+	copy(arrAuxiliar, arrAuxiliar+maximo, arrUtil);
+	cout << "sale2\n";
+	tiempoInicial = chrono::high_resolution_clock::now();
+	selectionSort(arrUtil, maximo);
+	tiempoFinal = chrono::high_resolution_clock::now();
+	chrono::duration<double> duracionSelection = tiempoFinal - tiempoInicial;
+	copy(arrAuxiliar, arrAuxiliar+maximo, arrUtil);
+	cout << "sale3\n";
+	tiempoInicial = chrono::high_resolution_clock::now();
+	shellSort(arrUtil, maximo);
+	tiempoFinal = chrono::high_resolution_clock::now();
+	chrono::duration<double> duracionShell = tiempoFinal - tiempoInicial;
+	copy(arrAuxiliar, arrAuxiliar+maximo, arrUtil);
+	cout << "sale4\n";
+	tiempoInicial = chrono::high_resolution_clock::now();
+	mergeSort(arrUtil, 0, maximo-1);
+	tiempoFinal = chrono::high_resolution_clock::now();
+	chrono::duration<double> duracionMerge = tiempoFinal - tiempoInicial;
+	copy(arrAuxiliar, arrAuxiliar+maximo, arrUtil);
+	cout << "sale5\n";
+	tiempoInicial = chrono::high_resolution_clock::now();
+	quickSort(arrUtil, 0, maximo-1);
+	tiempoFinal = chrono::high_resolution_clock::now();
+	chrono::duration<double> duracionQuick = tiempoFinal - tiempoInicial;
+	copy(arrAuxiliar, arrAuxiliar+maximo, arrUtil);
+	cout << "sale6\n";
+	tiempoInicial = chrono::high_resolution_clock::now();
+	heapSort(arrUtil, maximo);
+	tiempoFinal = chrono::high_resolution_clock::now();
+	chrono::duration<double> duracionHeap = tiempoFinal - tiempoInicial;
+	copy(arrAuxiliar, arrAuxiliar+maximo, arrUtil);
+	cout << "sale7\n";
+	cout << "Insertion: " << duracionInsertion.count() << " segundos\n";
+	cout << "Bubble: " << duracionBubble.count() << " segundos\n";
+	cout << "Selection: " << duracionSelection.count() << " segundos\n";
+	cout << "Shell: " << duracionShell.count() << " segundos\n";
+	cout << "Merge: " << duracionMerge.count() << " segundos\n";
+	cout << "Quick: " << duracionQuick.count() << " segundos\n";
+	cout << "Heap: " << duracionHeap.count() << " segundos\n";
+}
 
 void crearArreglos(int maximo){
 
@@ -181,20 +238,26 @@ void crearArreglos(int maximo){
 	int* arrDuplicados = new int[maximo];
 	int* arrAuxiliar = new int[maximo];
 
-	for(int i = 0; i<maximo; ++i){
+	for(int i = 0; i<maximo; i++){
 		arrOrdenado[i] = i+1;
-		arrInverso[maximo-i] = i+1;
+		arrInverso[maximo-i-1] = i+1;
 		arrDuplicados[i] = rand()%maximo+1;
 	}
 	copy(arrOrdenado, arrOrdenado+maximo, arrDesordenado);
 	random_shuffle(arrDesordenado, arrDesordenado+maximo);
 	
 	
+	verificarTiempo(arrOrdenado, arrAuxiliar, maximo);
+	verificarTiempo(arrInverso, arrAuxiliar, maximo);
+	verificarTiempo(arrDesordenado, arrAuxiliar, maximo);
+	verificarTiempo(arrDuplicados, arrAuxiliar, maximo);
+	
+	
 	delete[] arrOrdenado;
     delete[] arrInverso;
     delete[] arrDesordenado;
     delete[] arrDuplicados;
-    delete[] arrAuxiliar;
+
 }
 
 int obtenerRandom(int inicio, int final){
@@ -214,6 +277,7 @@ void menu(){
 		}
 		if(opcion == 2){
 			crearArreglos(obtenerRandom(1000*15, 1500*15));
+			
 		}
 		if(opcion == 3){
 			crearArreglos(obtenerRandom(60000, 80000));
