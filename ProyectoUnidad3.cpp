@@ -3,6 +3,8 @@
 #include<cstdlib>
 #include<time.h>
 #include<algorithm>
+#include<windows.h>
+#define color SetConsoleTextAttribute
 
 using namespace std;
 
@@ -177,60 +179,95 @@ void imprimirArreglo(int arr[], int n){
 }
 
 void verificarTiempo(int arrUtil[], int arrAuxiliar[], int maximo){
-
+	
 	copy(arrUtil, arrUtil+maximo, arrAuxiliar);
 	auto tiempoInicial = chrono::high_resolution_clock::now();
 	insertionSort(arrUtil, maximo);
 	auto tiempoFinal = chrono::high_resolution_clock::now();
 	chrono::duration<double> duracionInsertion = tiempoFinal - tiempoInicial;
 	copy(arrAuxiliar, arrAuxiliar+maximo, arrUtil);
-	cout << "sale1\n";
+
 	tiempoInicial = chrono::high_resolution_clock::now();
 	bubbleSort(arrUtil, maximo);
 	tiempoFinal = chrono::high_resolution_clock::now();
 	chrono::duration<double> duracionBubble = tiempoFinal - tiempoInicial;
 	copy(arrAuxiliar, arrAuxiliar+maximo, arrUtil);
-	cout << "sale2\n";
+
 	tiempoInicial = chrono::high_resolution_clock::now();
 	selectionSort(arrUtil, maximo);
 	tiempoFinal = chrono::high_resolution_clock::now();
 	chrono::duration<double> duracionSelection = tiempoFinal - tiempoInicial;
 	copy(arrAuxiliar, arrAuxiliar+maximo, arrUtil);
-	cout << "sale3\n";
+
 	tiempoInicial = chrono::high_resolution_clock::now();
 	shellSort(arrUtil, maximo);
 	tiempoFinal = chrono::high_resolution_clock::now();
 	chrono::duration<double> duracionShell = tiempoFinal - tiempoInicial;
 	copy(arrAuxiliar, arrAuxiliar+maximo, arrUtil);
-	cout << "sale4\n";
+
 	tiempoInicial = chrono::high_resolution_clock::now();
 	mergeSort(arrUtil, 0, maximo-1);
 	tiempoFinal = chrono::high_resolution_clock::now();
 	chrono::duration<double> duracionMerge = tiempoFinal - tiempoInicial;
 	copy(arrAuxiliar, arrAuxiliar+maximo, arrUtil);
-	cout << "sale5\n";
+
 	tiempoInicial = chrono::high_resolution_clock::now();
 	quickSort(arrUtil, 0, maximo-1);
 	tiempoFinal = chrono::high_resolution_clock::now();
 	chrono::duration<double> duracionQuick = tiempoFinal - tiempoInicial;
 	copy(arrAuxiliar, arrAuxiliar+maximo, arrUtil);
-	cout << "sale6\n";
+
 	tiempoInicial = chrono::high_resolution_clock::now();
 	heapSort(arrUtil, maximo);
 	tiempoFinal = chrono::high_resolution_clock::now();
 	chrono::duration<double> duracionHeap = tiempoFinal - tiempoInicial;
 	copy(arrAuxiliar, arrAuxiliar+maximo, arrUtil);
-	cout << "sale7\n";
-	cout << "Insertion: " << duracionInsertion.count() << " segundos\n";
-	cout << "Bubble: " << duracionBubble.count() << " segundos\n";
-	cout << "Selection: " << duracionSelection.count() << " segundos\n";
-	cout << "Shell: " << duracionShell.count() << " segundos\n";
-	cout << "Merge: " << duracionMerge.count() << " segundos\n";
-	cout << "Quick: " << duracionQuick.count() << " segundos\n";
-	cout << "Heap: " << duracionHeap.count() << " segundos\n";
+
+	HANDLE hConsole = GetStdHandle( STD_OUTPUT_HANDLE );
+	color(hConsole, 4);
+	cout << "1. ";
+	color(hConsole, 7);
+	cout << "Insertion sort: " << duracionInsertion.count() << " segundos\n";
+	color(hConsole, 4);
+	cout << "2. ";
+	color(hConsole, 7);
+	cout << "Bubble sort: " << duracionBubble.count() << " segundos\n";
+	color(hConsole, 4);
+	cout << "3. ";
+	color(hConsole, 7);
+	cout << "Selection sort: " << duracionSelection.count() << " segundos\n";
+	color(hConsole, 4);
+	cout << "4. ";
+	color(hConsole, 7);
+	cout << "Shell sort: " << duracionShell.count() << " segundos\n";
+	color(hConsole, 4);
+	cout << "5. ";
+	color(hConsole, 7);
+	cout << "Merge sort: " << duracionMerge.count() << " segundos\n";
+	color(hConsole, 4);
+	cout << "6. ";
+	color(hConsole, 7);
+	cout << "Quick sort: " << duracionQuick.count() << " segundos\n";
+	color(hConsole, 4);
+	cout << "7. ";
+	color(hConsole, 7);
+	cout << "Heap sort: " << duracionHeap.count() << " segundos\n";
+	
+	chrono::duration<double> duracion[7]= {duracionInsertion, duracionBubble, duracionSelection, duracionShell, duracionMerge, duracionQuick, duracionHeap};
+	chrono::duration<double> duracionMenor = duracionInsertion;
+	string algoritmos[7] = {"Insertion sort", "Bubble sort", "Selection sort", "Shell sort", "Merge sort", "Quick sort", "Heap sort"};
+	int ganador = 0;
+	for(int i = 0; i<7; i++){
+		if(duracion[i].count() < duracionMenor.count()){
+			duracionMenor = duracion[i];
+			ganador = i;
+		}
+	}
+	cout << "\nEl ganador es: " << algoritmos[ganador] << " un tiempo de " << duracionMenor.count() << " segundos\n\n";
+	
 }
 
-void crearArreglos(int maximo){
+void crearArreglos(int maximo, string modo){
 
 	int* arrOrdenado = new int[maximo];
 	int* arrInverso = new int[maximo];
@@ -246,10 +283,13 @@ void crearArreglos(int maximo){
 	copy(arrOrdenado, arrOrdenado+maximo, arrDesordenado);
 	random_shuffle(arrDesordenado, arrDesordenado+maximo);
 	
-	
+	cout << "Carrera " << modo << ", Modo Ordenado\n";
 	verificarTiempo(arrOrdenado, arrAuxiliar, maximo);
+	cout << "Carrera " << modo << ", Modo Inverso\n";
 	verificarTiempo(arrInverso, arrAuxiliar, maximo);
+	cout << "Carrera " << modo << ", Modo Aleatorio\n";
 	verificarTiempo(arrDesordenado, arrAuxiliar, maximo);
+	cout << "Carrera " << modo << ", Modo Aleatorio con duplicados\n";
 	verificarTiempo(arrDuplicados, arrAuxiliar, maximo);
 	
 	
@@ -270,17 +310,19 @@ void menu(){
 	while(opcion != 4){
 		cout << "Seleccione:\n1) Cola de espera\n2) Trazabilidad de objetos\n3) Eventos de cada escenario\n4) Salir\nIngrese una opcion: ";
 		cin >> opcion;
-		
+		if(cin.fail()){
+			cin.clear();
+			cin.ignore(1000, '\n');
+			cout << "\nDebe ser un numero la opcion que ingresa\n";
+		}
 		if(opcion == 1){
-			
-			crearArreglos(obtenerRandom(100000, 110000));
+			crearArreglos(obtenerRandom(100000, 110000), "Cola de espera");
 		}
 		if(opcion == 2){
-			crearArreglos(obtenerRandom(1000*15, 1500*15));
-			
+			crearArreglos(obtenerRandom(1000*15, 1500*15), "Trazabilidad de objetos");
 		}
 		if(opcion == 3){
-			crearArreglos(obtenerRandom(60000, 80000));
+			crearArreglos(obtenerRandom(60000, 80000), "Eventos de cada escenario");
 		}
 		if(opcion > 4 || opcion < 1){
 			cout << "Opcion invalida\n";
@@ -291,19 +333,6 @@ void menu(){
 int main(){
 	srand(time(0));
 	menu();
-	//imprimirArreglo(arr, n);
-	/*auto t0 = chrono::high_resolution_clock::now();
-	insertionSort(arr, n);
-	auto t1 = chrono::high_resolution_clock::now();
-	chrono::duration<double> duracion = t1 - t0;
-	cout << "La funcion duro: " << duracion.count() << " segundos\n";*/
-	//bubbleSort(arr, n);
-	//selectionSort(arr, n);
-	//shellSort(arr, n);
-	//mergeSort(arr, 0, n-1);
-	//quickSort(arr, 0, n-1);
-	//heapSort(arr, n);
-	//imprimirArreglo(arr, n);
 	return 0;
 }
 
