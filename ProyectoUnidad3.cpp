@@ -1,4 +1,8 @@
 #include<iostream>
+#include<chrono>
+#include<cstdlib>
+#include<time.h>
+#include<algorithm>
 
 using namespace std;
 
@@ -169,21 +173,73 @@ void imprimirArreglo(int arr[], int n){
 
 
 
-int main(){
-	int arr[1000];
-	int n = sizeof(arr)/sizeof(arr[0]);
-	for(int i = n; i>0; i--){
-		arr[n-i]= i;
+void crearArreglos(int maximo){
+
+	int* arrOrdenado = new int[maximo];
+	int* arrInverso = new int[maximo];
+	int* arrDesordenado = new int[maximo];
+	int* arrDuplicados = new int[maximo];
+	int* arrAuxiliar = new int[maximo];
+
+	for(int i = 0; i<maximo; ++i){
+		arrOrdenado[i] = i+1;
+		arrInverso[maximo-i] = i+1;
+		arrDuplicados[i] = rand()%maximo+1;
 	}
-	imprimirArreglo(arr, n);
+	copy(arrOrdenado, arrOrdenado+maximo, arrDesordenado);
+	random_shuffle(arrDesordenado, arrDesordenado+maximo);
+	
+	
+	delete[] arrOrdenado;
+    delete[] arrInverso;
+    delete[] arrDesordenado;
+    delete[] arrDuplicados;
+    delete[] arrAuxiliar;
+}
+
+int obtenerRandom(int inicio, int final){
+	return rand()%(final-inicio+1)+inicio;
+}
+
+void menu(){
+	int opcion = 0;
+	cout << "Bienvenido a las carreras de algoritmos de ordenamiento\n";
+	while(opcion != 4){
+		cout << "Seleccione:\n1) Cola de espera\n2) Trazabilidad de objetos\n3) Eventos de cada escenario\n4) Salir\nIngrese una opcion: ";
+		cin >> opcion;
+		
+		if(opcion == 1){
+			
+			crearArreglos(obtenerRandom(100000, 110000));
+		}
+		if(opcion == 2){
+			crearArreglos(obtenerRandom(1000*15, 1500*15));
+		}
+		if(opcion == 3){
+			crearArreglos(obtenerRandom(60000, 80000));
+		}
+		if(opcion > 4 || opcion < 1){
+			cout << "Opcion invalida\n";
+		}
+	}
+}
+
+int main(){
+	srand(time(0));
+	menu();
+	//imprimirArreglo(arr, n);
+	/*auto t0 = chrono::high_resolution_clock::now();
 	insertionSort(arr, n);
+	auto t1 = chrono::high_resolution_clock::now();
+	chrono::duration<double> duracion = t1 - t0;
+	cout << "La funcion duro: " << duracion.count() << " segundos\n";*/
 	//bubbleSort(arr, n);
 	//selectionSort(arr, n);
 	//shellSort(arr, n);
 	//mergeSort(arr, 0, n-1);
 	//quickSort(arr, 0, n-1);
 	//heapSort(arr, n);
-	imprimirArreglo(arr, n);
+	//imprimirArreglo(arr, n);
 	return 0;
 }
 
